@@ -1,0 +1,1 @@
+# Cursor-for-Product-managers
