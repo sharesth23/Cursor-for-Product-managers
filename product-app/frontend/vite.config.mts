@@ -1,23 +1,16 @@
-{
-  "name": "product-app-frontend",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "axios": "^1.7.9",
-    "jwt-decode": "^4.0.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-router-dom": "^6.28.0"
-  },
-  "devDependencies": {
-    "@types/react": "^18.3.6",
-    "@types/react-dom": "^18.3.0",
-    "@vitejs/plugin-react-swc": "^4.1.0",
-    "vite": "^6.0.5"
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react-swc";
+
+export default defineConfig({
+  plugins: [react()],
+  server: {
+    port: 5173,
+    proxy: {
+      "/api": {
+        target: "http://localhost:4000",
+        changeOrigin: true
+      }
+    }
   }
-}
+});
+
