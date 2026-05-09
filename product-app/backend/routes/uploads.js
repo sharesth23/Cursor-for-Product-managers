@@ -26,7 +26,35 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage });
+const allowedMimeTypes = [
+  "image/jpeg",
+  "image/png",
+  "image/gif",
+  "image/webp",
+  "application/pdf",
+  "text/plain",
+  "text/csv",
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "audio/mpeg",
+  "audio/wav",
+  "video/mp4",
+  "video/webm"
+];
+
+const fileFilter = (_req, file, cb) => {
+  if (allowedMimeTypes.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(null, false); // Reject the file silently, req.file will be undefined
+  }
+};
+
+const upload = multer({
+  storage,
+  fileFilter,
+  limits: { fileSize: 50 * 1024 * 1024 } // 50MB limit to prevent DOS via large files
+});
 
 router.get("/:projectId", async (req, res) => {
   const db = getDB();
@@ -44,7 +72,7 @@ router.post(
     const db = getDB();
     const project = await db.get("SELECT id FROM projects WHERE id = ? AND company_id = ?", [req.params.projectId, req.user.company_id]);
     if (!project) return res.status(404).json({ error: "Project not found" });
-    if (!req.file) return res.status(400).json({ error: "Missing file" });
+    if (!req.file) return res.status(400).json({ error: "Missing or invalid file type" });
 
     const record = {
       id: uuid(),
