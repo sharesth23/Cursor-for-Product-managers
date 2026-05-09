@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import rateLimit from "express-rate-limit";
 import { v4 as uuid } from "uuid";
 import { getDB } from "../db.js";
+import crypto from "crypto";
 import { verifyToken, requireRole, requireActiveCompany } from "../middleware/auth.js";
 
 const router = express.Router();
@@ -175,7 +176,7 @@ router.post("/reset-password", verifyToken, requireActiveCompany, requireRole("a
     if (!employee) return res.status(404).json({ error: "Employee not found" });
 
     // Generate a random temporary password
-    const newPassword = Math.random().toString(36).slice(-8);
+    const newPassword = crypto.randomBytes(4).toString("hex");
     const hash = await bcrypt.hash(newPassword, 12);
 
     await db.run("UPDATE employees SET password_hash = ? WHERE id = ?", [hash, employeeId]);
