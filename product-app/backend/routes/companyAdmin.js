@@ -40,10 +40,10 @@ router.post("/employees", async (req, res) => {
   const db = getDB();
   try {
     // Check seat limit
-    const employees = await db.all("SELECT id FROM employees WHERE company_id = ?", [req.user.company_id]);
+    const empCount = await db.get("SELECT COUNT(id) as count FROM employees WHERE company_id = ?", [req.user.company_id]);
     const company = await db.get("SELECT max_employees FROM companies WHERE id = ?", [req.user.company_id]);
     
-    if (employees.length >= company.max_employees) {
+    if (empCount.count >= company.max_employees) {
       return res.status(403).json({ error: "Seat limit reached. Upgrade your plan or remove an employee." });
     }
 
