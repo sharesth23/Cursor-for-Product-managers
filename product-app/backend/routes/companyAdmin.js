@@ -1,5 +1,5 @@
 import express from "express";
-import { v4 as uuid } from "uuid";
+import crypto from "crypto";
 import bcrypt from "bcryptjs";
 import { getDB } from "../db.js";
 import { verifyToken, requireRole, requireActiveCompany } from "../middleware/auth.js";
@@ -53,7 +53,7 @@ router.post("/employees", async (req, res) => {
       return res.status(400).json({ error: "Email is already registered" });
     }
 
-    const employeeId = uuid();
+    const employeeId = crypto.randomUUID();
     const hash = await bcrypt.hash(password, 12);
 
     await db.run(
