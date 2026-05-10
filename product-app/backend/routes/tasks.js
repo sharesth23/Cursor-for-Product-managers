@@ -1,5 +1,5 @@
 import express from "express";
-import { v4 as uuid } from "uuid";
+import crypto from "crypto";
 import { getDB } from "../db.js";
 import { verifyToken, requireActiveCompany } from "../middleware/auth.js";
 
@@ -22,7 +22,7 @@ router.post("/:projectId", async (req, res) => {
   if (!project) return res.status(404).json({ error: "Project not found" });
 
   const task = {
-    id: uuid(),
+    id: crypto.randomUUID(),
     company_id: req.user.company_id,
     project_id: req.params.projectId,
     owner_id: req.user.sub,
