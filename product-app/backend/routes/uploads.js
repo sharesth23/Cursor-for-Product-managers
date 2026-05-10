@@ -2,7 +2,7 @@ import express from "express";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
-import { v4 as uuid } from "uuid";
+import crypto from "crypto";
 import { getDB } from "../db.js";
 import { verifyToken, requireActiveCompany } from "../middleware/auth.js";
 
@@ -75,7 +75,7 @@ router.post(
     if (!req.file) return res.status(400).json({ error: "Missing or invalid file type" });
 
     const record = {
-      id: uuid(),
+      id: crypto.randomUUID(),
       company_id: req.user.company_id,
       project_id: req.params.projectId,
       owner_id: req.user.sub,
