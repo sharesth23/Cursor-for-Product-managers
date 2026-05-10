@@ -115,7 +115,6 @@ async function seedSuperAdmin() {
         "INSERT INTO super_admins (id, email, password_hash) VALUES (?, ?, ?)",
         [uuid(), email, hash]
       );
-      console.log(`✅ Seeded super admin: ${email}`);
     }
   }
 }
