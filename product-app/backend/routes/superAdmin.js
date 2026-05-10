@@ -1,5 +1,5 @@
 import express from "express";
-import { v4 as uuid } from "uuid";
+import crypto from "crypto";
 import bcrypt from "bcryptjs";
 import { getDB } from "../db.js";
 import { verifySuperAdmin } from "../middleware/auth.js";
@@ -38,8 +38,8 @@ router.post("/companies", async (req, res) => {
     const existing = await db.get("SELECT id FROM companies WHERE slug = ?", slug);
     if (existing) slug = `${slug}-${Math.floor(Math.random() * 1000)}`;
 
-    const companyId = uuid();
-    const employeeId = uuid();
+    const companyId = crypto.randomUUID();
+    const employeeId = crypto.randomUUID();
     const hash = await bcrypt.hash(initial_admin_password, 12);
 
     await db.run("BEGIN TRANSACTION");
