@@ -17,12 +17,11 @@ router.get("/employees", async (req, res) => {
       "SELECT id, name, email, role, is_active, last_login_at, created_at FROM employees WHERE company_id = ? ORDER BY created_at DESC", 
       [req.user.company_id]
     );
-    const company = await db.get("SELECT max_employees FROM companies WHERE id = ?", [req.user.company_id]);
     
     res.json({
       employees,
       seatsUsed: employees.length,
-      maxSeats: company.max_employees
+      maxSeats: req.company.max_employees
     });
   } catch (err) {
     res.status(500).json({ error: "Failed to fetch employees" });
@@ -41,9 +40,8 @@ router.post("/employees", async (req, res) => {
   try {
     // Check seat limit
     const empCount = await db.get("SELECT COUNT(id) as count FROM employees WHERE company_id = ?", [req.user.company_id]);
-    const company = await db.get("SELECT max_employees FROM companies WHERE id = ?", [req.user.company_id]);
     
-    if (empCount.count >= company.max_employees) {
+    if (empCount.count >= req.company.max_employees) {
       return res.status(403).json({ error: "Seat limit reached. Upgrade your plan or remove an employee." });
     }
 

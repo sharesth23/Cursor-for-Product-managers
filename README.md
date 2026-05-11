@@ -82,5 +82,5 @@ An AI-native product discovery system that:
 ## Development
 
 ### Repo layout
-- `backend/` FastAPI API + background workers
-- `mobile/` Flutter app (iOS/Android)
+- `product-app/backend/` Node.js Express API using SQLite
+- `product-app/frontend/` React app built with Vite
