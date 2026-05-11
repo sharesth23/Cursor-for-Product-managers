@@ -63,7 +63,7 @@ export async function requireActiveCompany(req, res, next) {
   }
 
   try {
-    const company = await db.get("SELECT is_active, expires_at FROM companies WHERE id = ?", companyId);
+    const company = await db.get("SELECT is_active, expires_at, max_employees FROM companies WHERE id = ?", companyId);
     
     if (!company) {
       return res.status(404).json({ error: "Company not found" });
@@ -80,6 +80,7 @@ export async function requireActiveCompany(req, res, next) {
       }
     }
 
+    req.company = company;
     next();
   } catch (err) {
     return res.status(500).json({ error: "Failed to check company status" });
